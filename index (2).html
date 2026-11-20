@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#176b45">
+<title>SURTIVENTAS | Catálogo</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7faf8;color:#193329;font-family:Arial,Helvetica,sans-serif}
+header{background:#176b45;color:white;padding:25px 18px}header,main,footer{padding-left:max(18px,calc((100% - 760px)/2));padding-right:max(18px,calc((100% - 760px)/2))}
+h1{margin:4px 0;font-size:30px}.brand{font-size:13px;letter-spacing:3px;font-weight:bold}
+.sub{margin:7px 0 0;color:#e4f2e9;font-size:14px}
+main{padding-top:20px;padding-bottom:30px}
+input{width:100%;padding:13px 14px;border:1px solid #ccd9d1;border-radius:10px;font-size:16px;background:white}
+.meta{display:flex;justify-content:space-between;gap:10px;margin:12px 2px;color:#66766e;font-size:12px}
+ul{list-style:none;padding:0;margin:0;background:white;border:1px solid #e1eae4;border-radius:10px;overflow:hidden}
+li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid #e8eee9}
+li:last-child{border-bottom:0}.name{font-size:14px;line-height:1.35}.price{font-weight:bold;color:#176b45;white-space:nowrap;font-size:15px}
+.empty{display:none;padding:18px;text-align:center;color:#66766e;background:white;border-radius:10px}
+footer{padding-bottom:25px;color:#68766f;font-size:12px;line-height:1.5}
+@media(max-width:420px){h1{font-size:26px}li{padding:12px}.name{font-size:13px}.price{font-size:14px}}
+</style>
+</head>
+<body>
+<header><div class="brand">SURTIVENTAS</div><h1>Catálogo de productos</h1><p class="sub">Lista de productos y precios de venta</p></header>
+<main>
+<input id="search" type="search" placeholder="Buscar producto..." aria-label="Buscar producto">
+<div class="meta"><span id="count">50 productos</span><span>Precios en pesos colombianos</span></div>
+<ul id="list"></ul><div class="empty" id="empty">No se encontraron productos.</div>
+</main>
+<footer>Precios sujetos a confirmación. Catálogo informativo; la comercialización y dispensación de medicamentos debe cumplir la normativa aplicable.</footer>
+<script>
+const products = [{"name": "Escitalopram 10 mg x30", "price": "6.125"}, {"name": "Oceira x50", "price": "78.750"}, {"name": "Tiquepin 25 mg x30", "price": "4.875"}, {"name": "Tiquepin 100 mg x30", "price": "9.488"}, {"name": "Tiquepin 200 mg x30", "price": "12.250"}, {"name": "Postay x1", "price": "13.375"}, {"name": "Postday x8", "price": "38.625"}, {"name": "Colgate Luminous White carbón", "price": "12.250"}, {"name": "Torros 60 mg x10", "price": "9.875"}, {"name": "Chapstick medicado", "price": "16.125"}, {"name": "Chapstick sabores", "price": "14.875"}, {"name": "Fem-duo óvulos", "price": "11.750"}, {"name": "Metronif óvulos", "price": "7.125"}, {"name": "Fencafen x50", "price": "25.625"}, {"name": "Eutirox 50 x50", "price": "6.250"}, {"name": "Eutirox 100 x50", "price": "6.250"}, {"name": "Eutirox 75 x50", "price": "18.125"}, {"name": "Hemocyton jarabe", "price": "18.125"}, {"name": "Bedoyecta x3 nacional comercial", "price": "25.000"}, {"name": "Cepillos Pro 425 x14", "price": "37.500"}, {"name": "Losartán 50 mg x300", "price": "19.000"}, {"name": "Noraber Faztotal x6", "price": "17.250"}, {"name": "Noraber noche x6", "price": "18.250"}, {"name": "Noraber garganta x12", "price": "22.000"}, {"name": "Noraber garganta x96", "price": "168.750"}, {"name": "Ferbin 250 mg x300", "price": "93.750"}, {"name": "Atorvastatina 20 mg x1000", "price": "60.000"}, {"name": "Atorvastatina 40 mg x500", "price": "60.000"}, {"name": "Fixamicin gotas", "price": "16.875"}, {"name": "Dermovate crema", "price": "30.625"}, {"name": "Stamil Forte x20", "price": "26.250"}, {"name": "Stamil x20", "price": "25.000"}, {"name": "Ileine x25", "price": "281.250"}, {"name": "Zaldiar x20", "price": "11.125"}, {"name": "Neofungina 40 g", "price": "12.875"}, {"name": "Neofungina 100 g", "price": "26.250"}, {"name": "Neofungina 200 g", "price": "42.500"}, {"name": "Lomotil x48 nacional comercial", "price": "81.250"}, {"name": "Winadeine F x100", "price": "37.250"}, {"name": "Ibuflash migraña x30", "price": "62.250"}, {"name": "Ibuflash migraña x8", "price": "17.250"}, {"name": "Oftalmotrimax gotas", "price": "4.750"}, {"name": "Depoprovera ampollas", "price": "16.250"}, {"name": "Presiderm crema", "price": "21.125"}, {"name": "Termómetro digital", "price": "6.000"}, {"name": "Lubriderm verde 200 ml", "price": "17.500"}, {"name": "Lubriderm azul 200 ml", "price": "17.500"}, {"name": "Esomeprazol 40 mg x100", "price": "18.125"}, {"name": "Beta-treinta", "price": "8.750"}, {"name": "Torros 90 mg x10", "price": "16.125"}];
+const list=document.getElementById('list'), search=document.getElementById('search');
+const count=document.getElementById('count'), empty=document.getElementById('empty');
+function render(){
+ const q=search.value.trim().toLocaleLowerCase('es');
+ const matches=products.filter(p=>p.name.toLocaleLowerCase('es').includes(q));
+ list.innerHTML=matches.map(p=>'<li><span class="name">'+p.name+'</span><span class="price">$'+p.price+'</span></li>').join('');
+ count.textContent=matches.length+' de '+products.length+' productos';
+ empty.style.display=matches.length?'none':'block';
+}
+search.addEventListener('input',render);render();
+</script>
+</body>
+</html>
